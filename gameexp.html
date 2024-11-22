@@ -70,7 +70,7 @@
     <script>
         let player = {
             money: 50,
-            income: 1,
+            income: 10,
             upgrades: {
                 flowers: { price: 100, income: 10, level: 0 },
                 paint: { price: 200, income: 20, level: 0 },
@@ -112,15 +112,14 @@
             }
 
             if (input === 'help') {
-                addMessage("Available commands: work, ask, search, income, cooldowns, guide, upgrades, profile", true);
-                addMessage("work - Work a shift to earn money (2 minutes cooldown).", true);
-                addMessage("ask - Ask for tips (3 minutes cooldown).", true);
-                addMessage("search - Search for cash (2 minutes cooldown).", true);
-                addMessage("income - Claim your hourly income (1 hour cooldown).", true);
-                addMessage("cooldowns - Show all active cooldowns.", true);
-                addMessage("guide - Show a guide on how to play the game.", true);
-                addMessage("upgrades - Show available upgrades.", true);
-                addMessage("profile - Display your profile.", true);
+                addMessage(`<button class="command-button" onclick="executeCommand('work')">Work</button> - Work a shift to earn money (2 minutes cooldown).`, true);
+                addMessage(`<button class="command-button" onclick="executeCommand('ask')">Ask</button> - Ask for tips (3 minutes cooldown).`, true);
+                addMessage(`<button class="command-button" onclick="executeCommand('search')">Search</button> - Search for cash (2 minutes cooldown).`, true);
+                addMessage(`<button class="command-button" onclick="executeCommand('income')">Income</button> - Claim your hourly income (1 hour cooldown).`, true);
+                addMessage(`<button class="command-button" onclick="executeCommand('cooldowns')">Cooldowns</button> - Show all active cooldowns.`, true);
+                addMessage(`<button class="command-button" onclick="executeCommand('guide')">Guide</button> - Show a guide on how to play the game.`, true);
+                addMessage(`<button class="command-button" onclick="executeCommand('upgrades')">Upgrades</button> - Show available upgrades.`, true);
+                addMessage(`<button class="command-button" onclick="executeCommand('profile')">Profile</button> - Display your profile.`, true);
             } else if (input === 'cooldowns') {
                 showCooldowns(currentTime);
             } else if (input === 'guide') {
@@ -181,8 +180,8 @@
         }
 
         function showGuide() {
-            addMessage("Guide: The best way to progress is to continuously work to earn money and then invest in upgrades that boost your income.");
-            addMessage("Make sure to use the 'ask' and 'search' commands whenever they are off cooldown to gain additional money.");
+            addMessage("Guide: The best way to progress is to continuously work to earn money and then invest in upgrades that boost your income.", true);
+            addMessage("Make sure to use the 'ask' and 'search' commands whenever they are off cooldown to gain additional money.", true);
         }
 
         function showUpgrades() {

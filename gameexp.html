@@ -112,7 +112,7 @@
             }
 
             if (input === 'help') {
-                addMessage("Commands: work, ask, search, income, cooldowns, guide, upgrades, profile", true);
+                addMessage("Available commands: work, ask, search, income, cooldowns, guide, upgrades, profile", true);
                 addMessage("work - Work a shift to earn money (2 minutes cooldown).", true);
                 addMessage("ask - Ask for tips (3 minutes cooldown).", true);
                 addMessage("search - Search for cash (2 minutes cooldown).", true);
@@ -138,7 +138,7 @@
                     workShift();
                 } else {
                     const timeLeft = formatTime(player.cooldowns.work - (currentTime - player.lastUsed.work));
-                    addMessage(`Work command is on cooldown. Time left: ${timeLeft}`);
+                    addMessage(timeLeft === "command is ready to use" ? `Work command is ready to use.` : `Work command is on cooldown. Time left: ${timeLeft}`);
                 }
             } else if (input === 'ask') {
                 if (currentTime - player.lastUsed.ask >= player.cooldowns.ask) {
@@ -146,7 +146,7 @@
                     askForTips();
                 } else {
                     const timeLeft = formatTime(player.cooldowns.ask - (currentTime - player.lastUsed.ask));
-                    addMessage(`Ask command is on cooldown. Time left: ${timeLeft}`);
+                    addMessage(timeLeft === "command is ready to use" ? `Ask command is ready to use.` : `Ask command is on cooldown. Time left: ${timeLeft}`);
                 }
             } else if (input === 'search') {
                 if (currentTime - player.lastUsed.search >= player.cooldowns.search) {
@@ -154,7 +154,7 @@
                     searchForCash();
                 } else {
                     const timeLeft = formatTime(player.cooldowns.search - (currentTime - player.lastUsed.search));
-                    addMessage(`Search command is on cooldown. Time left: ${timeLeft}`);
+                    addMessage(timeLeft === "command is ready to use" ? `Search command is ready to use.` : `Search command is on cooldown. Time left: ${timeLeft}`);
                 }
             } else if (input === 'income') {
                 if (currentTime - player.lastUsed.income >= player.cooldowns.income) {
@@ -162,7 +162,7 @@
                     calculateIncome();
                 } else {
                     const timeLeft = formatTime(player.cooldowns.income - (currentTime - player.lastUsed.income));
-                    addMessage(`Income command is on cooldown. Time left: ${timeLeft}`);
+                    addMessage(timeLeft === "command is ready to use" ? `Income command is ready to use.` : `Income command is on cooldown. Time left: ${timeLeft}`);
                 }
             } else {
                 addMessage("Unknown command. Type 'help' to see available commands.");
@@ -250,11 +250,18 @@
         });
 
         function formatTime(ms) {
+            if (ms <= 0) {
+                return "command is ready to use";
+            }
             const totalSeconds = Math.floor(ms / 1000);
             const hours = Math.floor(totalSeconds / 3600);
             const minutes = Math.floor((totalSeconds % 3600) / 60);
             const seconds = totalSeconds % 60;
-            return `${hours}h ${minutes}m ${seconds}s`;
+            let timeString = '';
+            if (hours > 0) timeString += `${hours} hours `;
+            if (minutes > 0) timeString += `${minutes} minutes `;
+            if (seconds > 0 || timeString === '') timeString += `${seconds} seconds`;
+            return timeString.trim();
         }
 
         function formatNumber(num) {

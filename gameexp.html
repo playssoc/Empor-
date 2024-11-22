@@ -138,7 +138,7 @@
             }
             output.innerHTML += `<p>${message}</p>`;
             const messages = output.getElementsByTagName('p');
-            if (messages.length > 3 && !isHelp) {
+            if (messages.length > 10 && !isHelp) { // Show up to 10 messages instead of 3
                 output.removeChild(messages[0]);
             }
             output.scrollTop = output.scrollHeight;
@@ -242,11 +242,11 @@
 
         function showResetTimersMenu() {
             addMessage("Reset Timers:", true);
-            addMessage('<button class="command-button" onclick="resetTimer(\'work\')">Reset Work Timer</button>');
-            addMessage('<button class="command-button" onclick="resetTimer(\'ask\')">Reset Ask Timer</button>');
-            addMessage('<button class="command-button" onclick="resetTimer(\'search\')">Reset Search Timer</button>');
-            addMessage('<button class="command-button" onclick="resetTimer(\'income\')">Reset Income Timer</button>');
-            addMessage('<button class="command-button" onclick="resetAllTimers()">Reset All Timers</button>');
+            addMessage('<button class="command-button" onclick="resetTimer(\'work\')">Reset Work Timer</button>', true);
+            addMessage('<button class="command-button" onclick="resetTimer(\'ask\')">Reset Ask Timer</button>', true);
+            addMessage('<button class="command-button" onclick="resetTimer(\'search\')">Reset Search Timer</button>', true);
+            addMessage('<button class="command-button" onclick="resetTimer(\'income\')">Reset Income Timer</button>', true);
+            addMessage('<button class="command-button" onclick="resetAllTimers()">Reset All Timers</button>', true);
         }
 
         function resetTimer(command) {

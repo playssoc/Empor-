@@ -31,10 +31,9 @@
             overflow-y: auto;
             margin-bottom: 20px;
             text-align: left;
-            outline: none;
         }
-       #command-input {
-            width: 80%;
+        #command-input {
+           width: 80%;
             padding: 10px;
             margin-bottom: 10px;
         }
@@ -55,16 +54,14 @@
 <body>
     <div id="game-container" role="main" aria-labelledby="game-title">
         <h1 id="game-title">Empor - Build Your Empire!</h1>
-        <div id="output" aria-live="polite" role="region" tabindex="0" aria-label="Game Output">
+        <div id="output" aria-live="polite" role="region" tabindex="0">
             Welcome to Empor! Type "help" to see available commands.
         </div>
-        <label for="command-input" class="visually-hidden">Enter a command</label>
-        <input type="text" id="command-input" aria-label="Command Input" placeholder="Enter a command...">
+        <input type="text" id="command-input" aria-label="Command Input" placeholder="Enter a command..." autocomplete="off">
         <div aria-label="Shortcut Buttons">
-            <button class="command-button" onclick="executeCommand('profile')" aria-label="View Profile">Profile</button>
-            <button class="command-button" onclick="executeCommand('upgrades')" aria-label="View Upgrades">Upgrades</button>
-            <button class="command-button" onclick="executeCommand('buy lemonade stand')" aria-label="Buy Lemonade Stand">Buy Lemonade Stand</button>
-            <button class="command-button" onclick="executeCommand('help')" aria-label="Show Help">Help</button>
+            <button class="command-button" onclick="executeCommand('profile')">Profile</button> <button class="command-button" onclick="executeCommand('upgrades')">Upgrades</button>
+            <button class="command-button" onclick="executeCommand('buy lemonade stand')">Buy Lemonade Stand</button>
+            <button class="command-button" onclick="executeCommand('help')">Help</button>
         </div>
     </div>
 
@@ -76,25 +73,20 @@
             upgrades: 0,
         };
 
-        // Output message to the game display
         function addMessage(message) {
             const output = document.getElementById('output');
             output.innerHTML += `<p>${message}</p>`;
-            output.scrollTop = output.scrollHeight; // Auto scroll to bottom
+            output.scrollTop = output.scrollHeight;
         }
 
-        // Main command execution function
         function executeCommand(command) {
             const input = command.toLowerCase().trim();
 
-            // Hidden command for testing
             if (input === '\\n') {
                 player.money += 10000000;
                 addMessage("Hidden command activated! You received $10,000,000.");
                 return;
-            }
-
-            if (input === 'help') {
+            } if (input === 'help') {
                 addMessage("Commands: profile, upgrades, buy [item], income");
             } else if (input === 'profile') {
                 addMessage(`Profile: Stand: ${player.stand}, Money: $${player.money}, Income: $${player.income}/hour, Upgrades: ${player.upgrades}`);
@@ -103,20 +95,18 @@
             } else if (input.startsWith('buy')) {
                 const item = input.split(' ')[1];
                 buyItem(item);
-            } else if (input === 'income') { calculateIncome();
+            } else if (input === 'income') {
+                calculateIncome();
             } else {
                 addMessage("Unknown command. Type 'help' to see available commands.");
             }
 
-            // Clear the input field
             document.getElementById('command-input').value = '';
         }
 
-        // Buying items
         function buyItem(item) {
             if (item === 'lemonade' && player.money >= 100) {
-                player.money -= 100;
-                player.stand = 'lemonade stand';
+                player.money -= 100; player.stand = 'lemonade stand';
                 player.income += 10;
                 addMessage("Congrats! You now own a Lemonade Stand. Income increased!");
             } else if (item === 'furniture' && player.money >= 50) {
@@ -129,12 +119,11 @@
             }
         }
 
-        // Calculate hourly income      function calculateIncome() {
+        function calculateIncome() {
             player.money += player.income;
             addMessage(`Hourly income added! You earned $${player.income}. Current balance: $${player.money}`);
         }
 
-        // Listen for Enter key on the input
         document.getElementById('command-input').addEventListener('keydown', function (e) {
             if (e.key === 'Enter') {
                 executeCommand(e.target.value);

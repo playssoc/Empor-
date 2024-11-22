@@ -180,7 +180,7 @@
                     workShift();
                 } else {
                     const timeLeft = formatTime(player.cooldowns.work - (currentTime - player.lastUsed.work));
-                    addMessage(timeLeft === "command is ready to use" ? `Work command is ready to use.` : `Work command is on cooldown. Time left: ${timeLeft}`);
+                    addMessage(`Work command is on cooldown. Time left: ${timeLeft}`);
                 }
             } else if (input === 'ask') {
                 if (currentTime - player.lastUsed.ask >= player.cooldowns.ask) {
@@ -188,7 +188,7 @@
                     askForTips();
                 } else {
                     const timeLeft = formatTime(player.cooldowns.ask - (currentTime - player.lastUsed.ask));
-                    addMessage(timeLeft === "command is ready to use" ? `Ask command is ready to use.` : `Ask command is on cooldown. Time left: ${timeLeft}`);
+                    addMessage(`Ask command is on cooldown. Time left: ${timeLeft}`);
                 }
             } else if (input === 'search') {
                 if (currentTime - player.lastUsed.search >= player.cooldowns.search) {
@@ -196,7 +196,7 @@
                     searchForCash();
                 } else {
                     const timeLeft = formatTime(player.cooldowns.search - (currentTime - player.lastUsed.search));
-                    addMessage(timeLeft === "command is ready to use" ? `Search command is ready to use.` : `Search command is on cooldown. Time left: ${timeLeft}`);
+                    addMessage(`Search command is on cooldown. Time left: ${timeLeft}`);
                 }
             } else if (input === 'income') {
                 if (currentTime - player.lastUsed.income >= player.cooldowns.income) {
@@ -204,7 +204,7 @@
                     calculateIncome();
                 } else {
                     const timeLeft = formatTime(player.cooldowns.income - (currentTime - player.lastUsed.income));
-                    addMessage(timeLeft === "command is ready to use" ? `Income command is ready to use.` : `Income command is on cooldown. Time left: ${timeLeft}`);
+                    addMessage(`Income command is on cooldown. Time left: ${timeLeft}`);
                 }
             } else if (input === '\\t') {
                 showResetTimersMenu();

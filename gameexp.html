@@ -49,9 +49,47 @@
         .command-button:hover, .upgrade-button:hover {
             background-color: #ff8533;
         }
+        .navbar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .nav-toggle {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+        .nav-menu {
+            display: none;
+            flex-direction: column;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 10px;
+            padding: 10px;
+        }
+        .nav-link {
+            padding: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+        .nav-link:hover {
+            background-color: #f0f0f0;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
+    <div class="navbar">
+        <button class="nav-toggle" aria-label="toggle navigation">☰</button>
+        <div class="nav-menu">
+            <a href="https://empor.vip" class="nav-link">Home</a>
+            <a href="https://empor.vip/dox" class="nav-link">Dox</a>
+            <a href="https://discord.gg/B28H4qfvXG" class="nav-link">Discord</a>
+        </div>
+    </div>
     <div id="game-container">
         <h1>Empor - Build Your Empire!</h1>
         <div id="output">Welcome to Empor! Type "help" to see available commands.</div>
@@ -269,6 +307,11 @@
             player.money += player.income;
             addMessage(`Hourly income added! You earned $${formatNumber(player.income)}. Current balance: $${formatNumber(player.money)}`);
         }
+
+        document.querySelector('.nav-toggle').addEventListener('click', () => {
+            const navMenu = document.querySelector('.nav-menu');
+            navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
+        });
 
         document.getElementById('command-input').addEventListener('keydown', function (e) {
             if (e.key === 'Enter') {

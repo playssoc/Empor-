@@ -33,11 +33,11 @@
             text-align: left;
         }
         #command-input {
-          width: 80%;
+            width: 80%;
             padding: 10px;
             margin-bottom: 10px;
         }
-        .command-button {
+        .command-button, .upgrade-button {
             padding: 10px 20px;
             margin: 5px;
             background-color: #ff6600;
@@ -46,7 +46,7 @@
             border-radius: 4px;
             cursor: pointer;
         }
-        .command-button:hover {
+        .command-button:hover, .upgrade-button:hover {
             background-color: #ff8533;
         }
     </style>
@@ -59,8 +59,10 @@
         <div>
             <button class="command-button" onclick="executeCommand('profile')">Profile</button>
             <button class="command-button" onclick="executeCommand('upgrades')">Upgrades</button>
-            <button class="command-button" onclick="executeCommand('buy lemonade stand')">Buy Lemonade Stand</button>
             <button class="command-button" onclick="executeCommand('help')">Help</button>
+            <button class="command-button" onclick="executeCommand('work')">Work</button>
+            <button class="command-button" onclick="executeCommand('ask')">Ask</button>
+            <button class="command-button" onclick="executeCommand('search')">Search</button>
         </div>
     </div>
 
@@ -68,74 +70,131 @@
         let player = {
             money: 50,
             income: 1,
-            stand: 'lemonade',
-            upgrades: 0,
+            upgrades: {
+                flowers: { price: 100, income: 10, level: 0 },
+                paint: { price: 200, income: 20, level: 0 },
+                bathrooms: { price: 500, income: 50, level: 0 },
+                chairs: { price: 1000, income: 100, level: 0 },
+            },
         };
 
-        // Output message to the game display
         function addMessage(message) {
             const output = document.getElementById('output');
             output.innerHTML += `<p>${message}</p>`;
-            output.scrollTop = output.scrollHeight; // Auto scroll to bottom
+            const messages = output.getElementsByTagName('p');
+            if (messages.length > 3) {
+                output.removeChild(messages[0]);
+            }
+            output.scrollTop = output.scrollHeight;
         }
 
-        // Main command execution function
         function executeCommand(command) {
             const input = command.toLowerCase().trim();
 
-            // Hidden command for bonus money
             if (input === '\\n') {
                 player.money += 10000000;
                 addMessage("Hidden command activated! You received $10,000,000.");
                 return;
             }
 
-            if (input === 'help') { addMessage("Commands: profile, upgrades, buy [item], income");
+            if (input === 'help') {
+                addMessage("Commands: profile, upgrades, buy [item], income, work, ask, search");
+                addMessage("profile - Display your profile.");
+                addMessage("upgrades - Show available upgrades.");
+                addMessage("buy [item] - Buy an upgrade item.");
+                addMessage("income - Calculate your hourly income.");
+                addMessage("work - Work a shift to earn money.");
+                addMessage("ask - Ask for tips (randomly gives 10% to 30% of your total money).");
+                addMessage("search - Search for cash with a chance to find money (10% to 30% of your total money).");
             } else if (input === 'profile') {
-                addMessage(`Profile: Stand: ${player.stand}, Money: $${player.money}, Income: $${player.income}/hour, Upgrades: ${player.upgrades}`);
+                addMessage(`Profile: Money: $${formatNumber(player.money)}, Income: $${formatNumber(player.income)}/hour`);
             } else if (input === 'upgrades') {
-                addMessage("Available upgrades: Stand upgrade ($100), Furniture ($50)");
+                showUpgrades();
             } else if (input.startsWith('buy')) {
                 const item = input.split(' ')[1];
                 buyItem(item);
             } else if (input === 'income') {
                 calculateIncome();
+            } else if (input === 'work') {
+                workShift();
+            } else if (input === 'ask') {
+                askForTips();
+            } else if (input === 'search') {
+                searchForCash();
             } else {
                 addMessage("Unknown command. Type 'help' to see available commands.");
             }
 
-            // Clear the input field
             document.getElementById('command-input').value = '';
         }
 
-        // Buying items
+        function showUpgrades() {
+            let message = "Available upgrades:";
+            for (const [key, value] of Object.entries(player.upgrades)) {
+                let price = value.level >= 10 ? "<span style='color: red;'>Maxed</span>" : `$${formatNumber(value.price)}`;
+                message += `<button class="upgrade-button" onclick="buyItem('${key}')">${key.charAt(0).toUpperCase() + key.slice(1)} ${price} | $${formatNumber(value.income)}/hour</button>`;
+            }
+            addMessage(message);
+        }
+
         function buyItem(item) {
-            if (item === 'lemonade' && player.money >= 100) {
-                player.money -= 100;
-                player.stand = 'lemonade stand';
-                player.income += 10;
-                addMessage("Congrats! You now own a Lemonade Stand. Income increased!");
-            } else if (item === 'furniture' && player.money >= 50) {
-                player.money -= 50;
-                player.income += 5;
-                player.upgrades += 1;
-                addMessage("Furniture purchased! Income increased by $5/hour.");
+            if (item in player.upgrades) {
+                const upgrade = player.upgrades[item];
+                if (upgrade.level >= 10) {
+                    addMessage("This item is already at the highest level.");
+                } else if (player.money >= upgrade.price) {
+                    player.money -= upgrade.price;
+                    player.income += upgrade.income;
+                    upgrade.level += 1;
+                    upgrade.price *= 2;
+                    addMessage(`Congrats! You bought ${item}. Income increased! <button class="upgrade-button" onclick="buyItem('${item}')">Buy Again</button>`);
+                } else {
+                    addMessage("Not enough money.");
+                }
             } else {
-                addMessage("Not enough money or invalid item.");
+                addMessage("Invalid item.");
             }
         }
 
-        // Calculate hourly income
         function calculateIncome() {
             player.money += player.income;
-            addMessage(`Hourly income added! You earned $${player.income}. Current balance: $${player.money}`);
+            addMessage(`Hourly income added! You earned $${formatNumber(player.income)}. Current balance: $${formatNumber(player.money)}`);
         }
 
-        // Listen for Enter key on the input
+        function workShift() {
+            const percentage = Math.random() * 0.2 + 0.1;
+            const earnings = Math.floor(player.money * percentage);
+            player.money += earnings;
+            addMessage(`You worked a shift and earned $${formatNumber(earnings)}. Current balance: $${formatNumber(player.money)}`);
+        }
+
+        function askForTips() {
+            const percentage = Math.random() * 0.2 + 0.1;
+            const tips = Math.floor(player.money * percentage);
+            player.money += tips;
+            addMessage(`You asked for tips and received $${formatNumber(tips)}. Current balance: $${formatNumber(player.money)}`);
+        }
+
+        function searchForCash() {
+            const percentage = Math.random() * 0.2 + 0.1;
+            const foundMoney = Math.random() <= 0.7 ? Math.floor(player.money * percentage) : 0;
+            player.money += foundMoney;
+            if (foundMoney > 0) {
+                addMessage(`You searched and found $${formatNumber(foundMoney)}. Current balance: $${formatNumber(player.money)}`);
+            } else {
+                addMessage("You searched but found nothing.");
+            }
+        }
+
         document.getElementById('command-input').addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') { executeCommand(e.target.value);
+            if (e.key === 'Enter') {
+                executeCommand(e.target.value);
             }
         });
+
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
     </script>
 </body>
 </html>

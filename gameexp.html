@@ -67,8 +67,12 @@
         let player = {
             money: 50,
             income: 1,
-            stand: 'lemonade',
-            upgrades: 0,
+            upgrades: {
+                flowers: { price: 100, income: 10, level: 0 },
+                paint: { price: 200, income: 20, level: 0 },
+                bathrooms: { price: 500, income: 50, level: 0 },
+                chairs: { price: 1000, income: 100, level: 0 },
+            },
         };
 
         // Display last three messages only
@@ -96,7 +100,7 @@
             if (input === 'help') {
                 addMessage("Commands: profile, upgrades, buy [item], income");
             } else if (input === 'profile') {
-                addMessage(`Profile: Stand: ${player.stand}, Money: $${player.money}, Income: $${player.income}/hour, Upgrades: ${player.upgrades}`);
+                addMessage(`Profile: Money: $${player.money}, Income: $${player.income}/hour`);
             } else if (input === 'upgrades') {
                 showUpgrades();
             } else if (input.startsWith('buy')) {
@@ -113,46 +117,28 @@
         }
 
         // Display available upgrades with buttons
-        function showUpgrades() { addMessage("Available upgrades:");
-            addMessage(`<button class="upgrade-button" onclick="buyItem('lemonade')">Buy Lemonade Stand ($100)</button>`);
-            addMessage(`<button class="upgrade-button" onclick="buyItem('furniture')">Buy Furniture ($50)</button>`);
-            addMessage(`<button class="upgrade-button" onclick="buyItem('hotdog')">Buy Hotdog Stand ($300)</button>`);
-            addMessage(`<button class="upgrade-button" onclick="buyItem('kiosk')">Buy Kiosk ($500)</button>`);
-            addMessage(`<button class="upgrade-button" onclick="buyItem('restaurant')">Buy Restaurant ($1000)</button>`);
+        function showUpgrades() {
+            addMessage("Available upgrades:");
+            for (const [key, value] of Object.entries(player.upgrades)) {
+                addMessage(`<button class="upgrade-button" onclick="buyItem('${key}')">${key.charAt(0).toUpperCase() + key.slice(1)} $${value.price} | $${value.income}/hour ${value.level}/10</button>`);
+            }
         }
 
         // Buying items
         function buyItem(item) {
-            if (item === 'lemonade' && player.money >= 100) {
-                player.money -= 100;
-                player.stand = 'lemonade stand';
-                player.income += 10;
-                addMessage("Congrats! You now own a Lemonade Stand. Income increased!"); addMessage(`<button class="upgrade-button" onclick="buyItem('lemonade')">Buy Another Lemonade Stand ($100)</button>`);
-            } else if (item === 'furniture' && player.money >= 50) {
-                player.money -= 50;
-                player.income += 5;
-                player.upgrades += 1;
-                addMessage("Furniture purchased! Income increased by $5/hour.");
-                addMessage(`<button class="upgrade-button" onclick="buyItem('furniture')">Buy More Furniture ($50)</button>`);
-            } else if (item === 'hotdog' && player.money >= 300) {
-                player.money -= 300;
-                player.stand = 'hotdog stand';
-                player.income += 25;
-                addMessage("Congrats! You now own a Hotdog Stand. Income increased!");
-                addMessage(`<button class="upgrade-button" onclick="buyItem('hotdog')">Buy Another Hotdog Stand ($300)</button>`);
-            } else if (item === 'kiosk' && player.money >= 500) { player.money -= 500;
-                player.stand = 'kiosk';
-                player.income += 50;
-                addMessage("Congrats! You now own a Kiosk. Income increased!");
-                addMessage(`<button class="upgrade-button" onclick="buyItem('kiosk')">Buy Another Kiosk ($500)</button>`);
-            } else if (item === 'restaurant' && player.money >= 1000) {
-                player.money -= 1000;
-                player.stand = 'restaurant';
-                player.income += 100;
-                addMessage("Congrats! You now own a Restaurant. Income increased!");
-                addMessage(`<button class="upgrade-button" onclick="buyItem('restaurant')">Buy Another Restaurant ($1000)</button>`);
+            if (item in player.upgrades) {
+                const upgrade = player.upgrades[item];
+                if (player.money >= upgrade.price) {
+                    player.money -= upgrade.price;
+                    player.income += upgrade.income;
+                    upgrade.level += 1;
+                    upgrade.price *= 2; // Increase price for the next upgrade
+                    addMessage(`Congrats! You bought ${item}. Income increased!`);
+                } else {
+                    addMessage("Not enough money.");
+                }
             } else {
-                addMessage("Not enough money or invalid item.");
+                addMessage("Invalid item.");
             }
         }
 

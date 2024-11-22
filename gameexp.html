@@ -49,32 +49,9 @@
         .command-button:hover, .upgrade-button:hover {
             background-color: #ff8533;
         }
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            background-color: #333;
-            padding: 10px;
-            width: 100%;
-            position: fixed;
-            top: 0;
-        }
-        .navbar a {
-            color: white;
-            padding: 14px 20px;
-            text-decoration: none;
-            text-align: center;
-        }
-        .navbar a:hover {
-            background-color: #ddd;
-            color: black;
-        }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <a href="https://empor.vip">Home</a>
-        <a href="https://discord.gg/B28H4qfvXG">Join Discord Server</a>
-    </div>
     <div id="game-container">
         <h1>Empor - Build Your Empire!</h1>
         <div id="output">Welcome to Empor! Type "help" to see available commands.</div>
@@ -134,14 +111,15 @@
                 return;
             }
 
-            if (input === '\\t') {
-                resetTimers();
-                addMessage("All timers have been reset.");
-                return;
-            }
-
             if (input === 'help') {
-                addMessage(`<button class="command-button" onclick="executeCommand('work')">Work</button> - Work a shift to earn money (2 minutes cooldown).<br><button class="command-button" onclick="executeCommand('ask')">Ask</button> - Ask for tips (3 minutes cooldown).<br><button class="command-button" onclick="executeCommand('search')">Search</button> - Search for cash (2 minutes cooldown).<br><button class="command-button" onclick="executeCommand('income')">Income</button> - Claim your hourly income (1 hour cooldown).<br><button class="command-button" onclick="executeCommand('cooldowns')">Cooldowns</button> - Show all active cooldowns.<br><button class="command-button" onclick="executeCommand('guide')">Guide</button> - Show a guide on how to play the game.<br><button class="command-button" onclick="executeCommand('upgrades')">Upgrades</button> - Show available upgrades.<br><button class="command-button" onclick="executeCommand('profile')">Profile</button> - Display your profile.", true);
+                addMessage(`<button class="command-button" onclick="executeCommand('work')">Work</button> - Work a shift to earn money (2 minutes cooldown).`, true);
+                addMessage(`<button class="command-button" onclick="executeCommand('ask')">Ask</button> - Ask for tips (3 minutes cooldown).`, true);
+                addMessage(`<button class="command-button" onclick="executeCommand('search')">Search</button> - Search for cash (2 minutes cooldown).`, true);
+                addMessage(`<button class="command-button" onclick="executeCommand('income')">Income</button> - Claim your hourly income (1 hour cooldown).`, true);
+                addMessage(`<button class="command-button" onclick="executeCommand('cooldowns')">Cooldowns</button> - Show all active cooldowns.`, true);
+                addMessage(`<button class="command-button" onclick="executeCommand('guide')">Guide</button> - Show a guide on how to play the game.`, true);
+                addMessage(`<button class="command-button" onclick="executeCommand('upgrades')">Upgrades</button> - Show available upgrades.`, true);
+                addMessage(`<button class="command-button" onclick="executeCommand('profile')">Profile</button> - Display your profile.`, true);
             } else if (input === 'cooldowns') {
                 showCooldowns(currentTime);
             } else if (input === 'guide') {
@@ -192,13 +170,6 @@
             document.getElementById('command-input').value = '';
         }
 
-        function resetTimers() {
-            player.lastUsed.work = 0;
-            player.lastUsed.ask = 0;
-            player.lastUsed.search = 0;
-            player.lastUsed.income = 0;
-        }
-
         function showCooldowns(currentTime) {
             let message = "Cooldowns:<br>";
             for (const [command, lastUsed] of Object.entries(player.lastUsed)) {
@@ -209,13 +180,8 @@
         }
 
         function showGuide() {
-            let message = "Guide: The best way to progress is to continuously work to earn money and then invest in upgrades that boost your income.\n";
-            message += "Make sure to use the 'ask' and 'search' commands whenever they are off cooldown to gain additional money.\n";
-            message += "Upgrades are crucial for increasing your income. Prioritize upgrades that give the highest income boost first.\n";
-            message += "Use the 'work' command regularly, as it is the primary source of income.\n";
-            message += "Check your profile regularly to see your progress and plan your next steps accordingly.\n";
-            message += "Always keep an eye on cooldowns to maximize your earnings and efficiency.";
-            addMessage(message, true);
+            addMessage("Guide: The best way to progress is to continuously work to earn money and then invest in upgrades that boost your income.", true);
+            addMessage("Make sure to use the 'ask' and 'search' commands whenever they are off cooldown to gain additional money.", true);
         }
 
         function showUpgrades() {

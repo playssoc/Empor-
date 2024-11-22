@@ -49,9 +49,47 @@
         .command-button:hover, .upgrade-button:hover {
             background-color: #ff8533;
         }
+        .navbar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .nav-toggle {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+        .nav-menu {
+            display: none;
+            flex-direction: column;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 10px;
+            padding: 10px;
+        }
+        .nav-link {
+            padding: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+        .nav-link:hover {
+            background-color: #f0f0f0;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
+    <div class="navbar">
+        <button class="nav-toggle" aria-label="toggle navigation">☰</button>
+        <div class="nav-menu">
+            <a href="https://empor.vip" class="nav-link">Home</a>
+            <a href="https://empor.vip/dox" class="nav-link">Dox</a>
+            <a href="https://discord.gg/B28H4qfvXG" class="nav-link">Discord</a>
+        </div>
+    </div>
     <div id="game-container">
         <h1>Empor - Build Your Empire!</h1>
         <div id="output">Welcome to Empor! Type "help" to see available commands.</div>
@@ -63,26 +101,40 @@
             <button class="command-button" onclick="executeCommand('work')">Work</button>
             <button class="command-button" onclick="executeCommand('ask')">Ask</button>
             <button class="command-button" onclick="executeCommand('search')">Search</button>
+            <button class="command-button" onclick="executeCommand('income')">Income</button>
+            <button class="command-button" onclick="window.location.href='https://empor.vip/dox'">Guide</button>
         </div>
     </div>
 
     <script>
         let player = {
             money: 50,
-            income: 1,
+            income: 10,
             upgrades: {
                 flowers: { price: 100, income: 10, level: 0 },
                 paint: { price: 200, income: 20, level: 0 },
                 bathrooms: { price: 500, income: 50, level: 0 },
                 chairs: { price: 1000, income: 100, level: 0 },
             },
+            cooldowns: {
+                work: 120000,  // 2 minutes in milliseconds
+                ask: 180000,   // 3 minutes in milliseconds
+                search: 120000, // 2 minutes in milliseconds
+                income: 3600000  // 1 hour in milliseconds
+            },
+            lastUsed: {
+                work: 0,
+                ask: 0,
+                search: 0,
+                income: 0
+            }
         };
 
-        function addMessage(message) {
+        function addMessage(message, isHelp = false, isSpecial = false) {
             const output = document.getElementById('output');
             output.innerHTML += `<p>${message}</p>`;
             const messages = output.getElementsByTagName('p');
-            if (messages.length > 3) {
+            if (messages.length > 3 && !isHelp && !isSpecial) {
                 output.removeChild(messages[0]);
             }
             output.scrollTop = output.scrollHeight;
@@ -90,6 +142,7 @@
 
         function executeCommand(command) {
             const input = command.toLowerCase().trim();
+            const currentTime = new Date().getTime();
 
             if (input === '\\n') {
                 player.money += 10000000;
@@ -97,15 +150,22 @@
                 return;
             }
 
+            if (input === '\\t') {
+                showTimerMenu();
+                return;
+            }
+
             if (input === 'help') {
-                addMessage("Commands: profile, upgrades, buy [item], income, work, ask, search");
-                addMessage("profile - Display your profile.");
-                addMessage("upgrades - Show available upgrades.");
-                addMessage("buy [item] - Buy an upgrade item.");
-                addMessage("income - Calculate your hourly income.");
-                addMessage("work - Work a shift to earn money.");
-                addMessage("ask - Ask for tips (randomly gives 10% to 30% of your total money).");
-                addMessage("search - Search for cash with a chance to find money (10% to 30% of your total money).");
+                addMessage(`<button class="command-button" onclick="executeCommand('work')">Work</button> - Work a shift to earn money (2 minutes cooldown).`, true);
+                addMessage(`<button class="command-button" onclick="executeCommand('ask')">Ask</button> - Ask for tips (3 minutes cooldown).`, true);
+                addMessage(`<button class="command-button" onclick="executeCommand('search')">Search</button> - Search for cash (2 minutes cooldown).`, true);
+                addMessage(`<button class="command-button" onclick="executeCommand('income')">Income</button> - Claim your hourly income (1 hour cooldown).`, true);
+                addMessage(`<button class="command-button" onclick="executeCommand('cooldowns')">Cooldowns</button> - Show all active cooldowns.`, true);
+                addMessage(`<button class="command-button" onclick="window.location.href='https://empor.vip/dox'">Guide</button> - View the game guide.`, true);
+                addMessage(`<button class="command-button" onclick="executeCommand('upgrades')">Upgrades</button> - Show available upgrades.`, true);
+                addMessage(`<button class="command-button" onclick="executeCommand('profile')">Profile</button> - Display your profile.`, true);
+            } else if (input === 'cooldowns') {
+                showCooldowns(currentTime);
             } else if (input === 'profile') {
                 addMessage(`Profile: Money: $${formatNumber(player.money)}, Income: $${formatNumber(player.income)}/hour`);
             } else if (input === 'upgrades') {
@@ -113,19 +173,81 @@
             } else if (input.startsWith('buy')) {
                 const item = input.split(' ')[1];
                 buyItem(item);
-            } else if (input === 'income') {
-                calculateIncome();
             } else if (input === 'work') {
-                workShift();
+                if (currentTime - player.lastUsed.work >= player.cooldowns.work) {
+                    player.lastUsed.work = currentTime;
+                    workShift();
+                } else {
+                    const timeLeft = formatTime(player.cooldowns.work - (currentTime - player.lastUsed.work));
+                    addMessage(timeLeft === "command is ready to use" ? `Work command is ready to use.` : `Work command is on cooldown. Time left: ${timeLeft}`);
+                }
             } else if (input === 'ask') {
-                askForTips();
+                if (currentTime - player.lastUsed.ask >= player.cooldowns.ask) {
+                    player.lastUsed.ask = currentTime;
+                    askForTips();
+                } else {
+                    const timeLeft = formatTime(player.cooldowns.ask - (currentTime - player.lastUsed.ask));
+                    addMessage(timeLeft === "command is ready to use" ? `Ask command is ready to use.` : `Ask command is on cooldown. Time left: ${timeLeft}`);
+                }
             } else if (input === 'search') {
-                searchForCash();
+                if (currentTime - player.lastUsed.search >= player.cooldowns.search) {
+                    player.lastUsed.search = currentTime;
+                    searchForCash();
+                } else {
+                    const timeLeft = formatTime(player.cooldowns.search - (currentTime - player.lastUsed.search));
+                    addMessage(timeLeft === "command is ready to use" ? `Search command is ready to use.` : `Search command is on cooldown. Time left: ${timeLeft}`);
+                }
+            } else if (input === 'income') {
+                if (currentTime - player.lastUsed.income >= player.cooldowns.income) {
+                    player.lastUsed.income = currentTime;
+                    calculateIncome();
+                } else {
+                    const timeLeft = formatTime(player.cooldowns.income - (currentTime - player.lastUsed.income));
+                    addMessage(timeLeft === "command is ready to use" ? `Income command is ready to use.` : `Income command is on cooldown. Time left: ${timeLeft}`);
+                }
             } else {
                 addMessage("Unknown command. Type 'help' to see available commands.");
             }
 
             document.getElementById('command-input').value = '';
+        }
+
+        function showTimerMenu() {
+            let message = "Timer Menu:<br>";
+            for (const [command] of Object.entries(player.lastUsed)) {
+                message += `<button class="command-button" onclick="resetTimer('${command}')">Reset ${command}</button><br>`;
+            }
+            message += `<button class="command-button" onclick="resetAllTimers()">Reset All Timers</button><br>`;
+            message += `<button class="command-button" onclick="speedUpTimers()">Speed Up Timers by 50%</button>`;
+            addMessage(message, false, true);
+        }
+
+        function resetTimer(command) {
+            player.lastUsed[command] = 0;
+            addMessage(`${command} timer has been reset.`, false, true);
+        }
+
+        function resetAllTimers() {
+            for (const command in player.lastUsed) {
+                player.lastUsed[command] = 0;
+            }
+            addMessage("All timers have been reset.", false, true);
+        }
+
+        function speedUpTimers() {
+            for (const command in player.cooldowns) {
+                player.cooldowns[command] = player.cooldowns[command] * 0.5;
+            }
+            addMessage("All timers have been sped up by 50%.", false, true);
+        }
+
+        function showCooldowns(currentTime) {
+            let message = "Cooldowns:<br>";
+            for (const [command, lastUsed] of Object.entries(player.lastUsed)) {
+                const timeLeft = formatTime(player.cooldowns[command] - (currentTime - lastUsed));
+                message += `${command}: ${timeLeft}<br>`;
+            }
+            addMessage(message);
         }
 
         function showUpgrades() {
@@ -156,11 +278,6 @@
             }
         }
 
-        function calculateIncome() {
-            player.money += player.income;
-            addMessage(`Hourly income added! You earned $${formatNumber(player.income)}. Current balance: $${formatNumber(player.money)}`);
-        }
-
         function workShift() {
             const percentage = Math.random() * 0.2 + 0.1;
             const earnings = Math.floor(player.money * percentage);
@@ -186,11 +303,36 @@
             }
         }
 
+        function calculateIncome() {
+            player.money += player.income;
+            addMessage(`Hourly income added! You earned $${formatNumber(player.income)}. Current balance: $${formatNumber(player.money)}`);
+        }
+
+        document.querySelector('.nav-toggle').addEventListener('click', () => {
+            const navMenu = document.querySelector('.nav-menu');
+            navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
+        });
+
         document.getElementById('command-input').addEventListener('keydown', function (e) {
             if (e.key === 'Enter') {
                 executeCommand(e.target.value);
             }
         });
+
+        function formatTime(ms) {
+            if (ms <= 0) {
+                return "command is ready to use";
+            }
+            const totalSeconds = Math.floor(ms / 1000);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            let timeString = '';
+            if (hours > 0) timeString += `${hours} hours `;
+            if (minutes > 0) timeString += `${minutes} minutes `;
+            if (seconds > 0 || timeString === '') timeString += `${seconds} seconds`;
+            return timeString.trim();
+        }
 
         function formatNumber(num) {
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

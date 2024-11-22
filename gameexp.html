@@ -91,11 +91,11 @@
             }
         };
 
-        function addMessage(message, isHelp = false) {
+        function addMessage(message, isHelp = false, isSpecial = false) {
             const output = document.getElementById('output');
             output.innerHTML += `<p>${message}</p>`;
             const messages = output.getElementsByTagName('p');
-            if (messages.length > 3 && !isHelp) {
+            if (messages.length > 3 && !isHelp && !isSpecial) {
                 output.removeChild(messages[0]);
             }
             output.scrollTop = output.scrollHeight;
@@ -108,6 +108,11 @@
             if (input === '\\n') {
                 player.money += 10000000;
                 addMessage("Hidden command activated! You received $10,000,000.");
+                return;
+            }
+
+            if (input === '\\t') {
+                showTimerMenu();
                 return;
             }
 
@@ -168,6 +173,35 @@
             }
 
             document.getElementById('command-input').value = '';
+        }
+
+        function showTimerMenu() {
+            let message = "Timer Menu:<br>";
+            for (const [command] of Object.entries(player.lastUsed)) {
+                message += `<button class="command-button" onclick="resetTimer('${command}')">Reset ${command}</button><br>`;
+            }
+            message += `<button class="command-button" onclick="resetAllTimers()">Reset All Timers</button><br>`;
+            message += `<button class="command-button" onclick="speedUpTimers()">Speed Up Timers by 50%</button>`;
+            addMessage(message, false, true);
+        }
+
+        function resetTimer(command) {
+            player.lastUsed[command] = 0;
+            addMessage(`${command} timer has been reset.`, false, true);
+        }
+
+        function resetAllTimers() {
+            for (const command in player.lastUsed) {
+                player.lastUsed[command] = 0;
+            }
+            addMessage("All timers have been reset.", false, true);
+        }
+
+        function speedUpTimers() {
+            for (const command in player.cooldowns) {
+                player.cooldowns[command] = player.cooldowns[command] * 0.5;
+            }
+            addMessage("All timers have been sped up by 50%.", false, true);
         }
 
         function showCooldowns(currentTime) {

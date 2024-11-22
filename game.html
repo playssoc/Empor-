@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empor - Text-Based Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        #game-container {
+            width: 80%;
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        #output {
+            height: 300px;
+            background: #e9e9e9;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        #command-input {
+           width: 80%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .command-button {
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .command-button:hover {
+            background-color: #ff8533;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <h1>Empor - Build Your Empire!</h1>
+        <div id="output">Welcome to Empor! Type "help" to see available commands.</div>
+        <input type="text" id="command-input" placeholder="Enter a command...">
+        <div>
+            <button class="command-button" onclick="executeCommand('profile')">Profile</button>
+            <button class="command-button" onclick="executeCommand('upgrades')">Upgrades</button>
+            <button class="command-button" onclick="executeCommand('buy lemonade stand')">Buy Lemonade Stand</button>
+            <button class="command-button" onclick="executeCommand('help')">Help</button>
+        </div>
+    </div>
+
+    <script>
+        let player = {
+            money: 50,
+            income: 1,
+            stand: 'lemonade',
+            upgrades: 0,
+        };
+
+        // Output message to the game display
+        function addMessage(message) {
+            const output = document.getElementById('output');
+            output.innerHTML += `<p>${message}</p>`;
+            output.scrollTop = output.scrollHeight; // Auto scroll to bottom
+        }
+
+        // Main command execution function
+        function executeCommand(command) {
+            const input = command.toLowerCase().trim();
+
+            if (input === 'help') {
+                addMessage("Commands: profile, upgrades, buy [item], income");
+            } else if (input === 'profile') {
+                addMessage(`Profile: Stand: ${player.stand}, Money: $${player.money}, Income: $${player.income}/hour, Upgrades: ${player.upgrades}`);
+            } else if (input === 'upgrades') {
+                addMessage("Available upgrades: Stand upgrade ($100), Furniture ($50)");
+            } else if (input.startsWith('buy')) {
+                const item = input.split(' ')[1];
+                buyItem(item);
+            } else if (input === 'income') {
+                calculateIncome();
+            } else {
+                addMessage("Unknown command. Type 'help' to see available commands.");
+            }
+
+            // Clear the input field
+            document.getElementById('command-input').value = '';
+        }
+
+        // Buying items
+        function buyItem(item) {
+            if (item === 'lemonade' && player.money >= 100) {
+                player.money -= 100;
+                player.stand = 'lemonade stand';
+                player.income += 10;
+                addMessage("Congrats! You now own a Lemonade Stand. Income increased!");
+            } else if (item === 'furniture' && player.money >= 50) {
+                player.money -= 50;
+                player.income += 5;
+                player.upgrades += 1;
+                addMessage("Furniture purchased! Income increased by $5/hour.");
+            } else {
+                addMessage("Not enough money or invalid item.");
+            }
+        }
+
+        // Calculate hourly income
+        function calculateIncome() {
+            player.money += player.income;
+            addMessage(`Hourly income added! You earned $${player.income}. Current balance: $${player.money}`);
+        }
+
+        // Listen for Enter key on the input
+        document.getElementById('command-input').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                executeCommand(e.target.value);
+            }
+        });
+    </script>
+</body>
+</html>

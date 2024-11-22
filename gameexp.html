@@ -57,9 +57,9 @@
         <div id="output">Welcome to Empor! Type "help" to see available commands.</div>
         <input type="text" id="command-input" placeholder="Enter a command...">
         <div>
+            <button class="command-button" onclick="executeCommand('profile')">Profile</button>
+            <button class="command-button" onclick="executeCommand('upgrades')">Upgrades</button>
             <button class="command-button" onclick="executeCommand('help')">Help</button>
-            <button class="command-button" onclick="executeCommand('cooldowns')">Cooldowns</button>
-            <button class="command-button" onclick="executeCommand('guide')">Guide</button>
             <button class="command-button" onclick="executeCommand('work')">Work</button>
             <button class="command-button" onclick="executeCommand('ask')">Ask</button>
             <button class="command-button" onclick="executeCommand('search')">Search</button>
@@ -91,11 +91,11 @@
             }
         };
 
-        function addMessage(message) {
+        function addMessage(message, isHelp = false) {
             const output = document.getElementById('output');
             output.innerHTML += `<p>${message}</p>`;
             const messages = output.getElementsByTagName('p');
-            if (messages.length > 3) {
+            if (messages.length > 3 && !isHelp) {
                 output.removeChild(messages[0]);
             }
             output.scrollTop = output.scrollHeight;
@@ -112,17 +112,26 @@
             }
 
             if (input === 'help') {
-                addMessage("Commands: work, ask, search, income, cooldowns, guide");
-                addMessage("work - Work a shift to earn money (2 minutes cooldown).");
-                addMessage("ask - Ask for tips (3 minutes cooldown).");
-                addMessage("search - Search for cash (2 minutes cooldown).");
-                addMessage("income - Claim your hourly income (1 hour cooldown).");
-                addMessage("cooldowns - Show all active cooldowns.");
-                addMessage("guide - Show a guide on how to play the game.");
+                addMessage("Commands: work, ask, search, income, cooldowns, guide, upgrades, profile", true);
+                addMessage("work - Work a shift to earn money (2 minutes cooldown).", true);
+                addMessage("ask - Ask for tips (3 minutes cooldown).", true);
+                addMessage("search - Search for cash (2 minutes cooldown).", true);
+                addMessage("income - Claim your hourly income (1 hour cooldown).", true);
+                addMessage("cooldowns - Show all active cooldowns.", true);
+                addMessage("guide - Show a guide on how to play the game.", true);
+                addMessage("upgrades - Show available upgrades.", true);
+                addMessage("profile - Display your profile.", true);
             } else if (input === 'cooldowns') {
                 showCooldowns(currentTime);
             } else if (input === 'guide') {
                 showGuide();
+            } else if (input === 'profile') {
+                addMessage(`Profile: Money: $${formatNumber(player.money)}, Income: $${formatNumber(player.income)}/hour`);
+            } else if (input === 'upgrades') {
+                showUpgrades();
+            } else if (input.startsWith('buy')) {
+                const item = input.split(' ')[1];
+                buyItem(item);
             } else if (input === 'work') {
                 if (currentTime - player.lastUsed.work >= player.cooldowns.work) {
                     player.lastUsed.work = currentTime;
@@ -174,6 +183,34 @@
         function showGuide() {
             addMessage("Guide: The best way to progress is to continuously work to earn money and then invest in upgrades that boost your income.");
             addMessage("Make sure to use the 'ask' and 'search' commands whenever they are off cooldown to gain additional money.");
+        }
+
+        function showUpgrades() {
+            let message = "Available upgrades:";
+            for (const [key, value] of Object.entries(player.upgrades)) {
+                let price = value.level >= 10 ? "<span style='color: red;'>Maxed</span>" : `$${formatNumber(value.price)}`;
+                message += `<button class="upgrade-button" onclick="buyItem('${key}')">${key.charAt(0).toUpperCase() + key.slice(1)} ${price} | $${formatNumber(value.income)}/hour</button>`;
+            }
+            addMessage(message);
+        }
+
+        function buyItem(item) {
+            if (item in player.upgrades) {
+                const upgrade = player.upgrades[item];
+                if (upgrade.level >= 10) {
+                    addMessage("This item is already at the highest level.");
+                } else if (player.money >= upgrade.price) {
+                    player.money -= upgrade.price;
+                    player.income += upgrade.income;
+                    upgrade.level += 1;
+                    upgrade.price *= 2;
+                    addMessage(`Congrats! You bought ${item}. Income increased! <button class="upgrade-button" onclick="buyItem('${item}')">Buy Again</button>`);
+                } else {
+                    addMessage("Not enough money.");
+                }
+            } else {
+                addMessage("Invalid item.");
+            }
         }
 
         function workShift() {

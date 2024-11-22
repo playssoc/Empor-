@@ -1,1 +1,113 @@
-v
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Empor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        header {
+            background-color: #ffcc00;
+            padding: 20px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            color: #333;
+        }
+        .content {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            margin-top: 20px;
+        }
+        .navbar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .nav-toggle {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+        .nav-menu {
+            display: none;
+            flex-direction: column;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 10px;
+            padding: 10px;
+        }
+        .nav-link {
+            padding: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+        .nav-link:hover {
+            background-color: #f0f0f0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <button class="nav-toggle" aria-label="toggle navigation">☰</button>
+        <div class="nav-menu">
+            <a href="https://empor.vip" class="nav-link">Home</a>
+            <a href="https://empor.vip/dox" class="nav-link">Dox</a>
+            <a href="https://discord.gg/B28H4qfvXG" class="nav-link">Discord</a>
+        </div>
+    </div>
+
+    <header>
+        <h1>Privacy Policy</h1>
+    </header>
+
+    <div class="content">
+        <h2>Introduction and Purpose</h2>
+        <p>This Privacy Policy explains how we collect, use, disclose, and protect your information when you visit our website <a href="https://empor.vip">Empor</a>. We are committed to ensuring that your privacy is protected. Should we ask you to provide certain information by which you can be identified when using this website, then you can be assured that it will only be used in accordance with this privacy statement.</p>
+
+        <h2>Data Collection Practices</h2>
+        <p>We do not collect personal data from users. The only data we store is related to our game, such as in-game currency (fake money) and other game-related information.</p>
+
+        <h2>Data Usage and Sharing Practices</h2>
+        <p>The game data we store is used solely for enhancing the gaming experience. We do not share this data with any third parties.</p>
+
+        <h2>Changes to This Privacy Policy</h2>
+        <p>We may change this policy from time to time by updating this page. You should check this page periodically to ensure that you are happy with any changes. This policy is effective from [Date].</p>
+
+        <p>If you have any questions or concerns about our privacy policy, please contact us at [Contact Information].</p>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Empor Game. All rights reserved.</p>
+        <p><a href="privacy.html">Privacy Policy</a> | <a href="tos.html">terms of service</a></p>
+    </footer>
+
+    <script>
+        document.querySelector('.nav-toggle').addEventListener('click', () => {
+            const navMenu = document.querySelector('.nav-menu');
+            navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
+        });
+    </script>
+</body>
+</html>

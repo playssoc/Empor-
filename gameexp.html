@@ -33,11 +33,11 @@
             text-align: left;
         }
         #command-input {
-          width: 80%;
+           width: 80%;
             padding: 10px;
             margin-bottom: 10px;
         }
-        .command-button {
+        .command-button, .upgrade-button {
             padding: 10px 20px;
             margin: 5px;
             background-color: #ff6600;
@@ -46,20 +46,8 @@
             border-radius: 4px;
             cursor: pointer;
         }
-        .command-button:hover {
+        .command-button:hover, .upgrade-button:hover {
             background-color: #ff8533;
-        }
-        .upgrade-button {
-            padding: 5px 10px;
-            margin-top: 5px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .upgrade-button:hover {
-            background-color: #0056b3;
         }
     </style>
 </head>
@@ -71,7 +59,6 @@
         <div>
             <button class="command-button" onclick="executeCommand('profile')">Profile</button>
             <button class="command-button" onclick="executeCommand('upgrades')">Upgrades</button>
-            <button class="command-button" onclick="executeCommand('buy lemonade stand')">Buy Lemonade Stand</button>
             <button class="command-button" onclick="executeCommand('help')">Help</button>
         </div>
     </div>
@@ -84,10 +71,14 @@
             upgrades: 0,
         };
 
-        // Output message to the game display
+        // Display last three messages only
         function addMessage(message) {
             const output = document.getElementById('output');
             output.innerHTML += `<p>${message}</p>`;
+            const messages = output.getElementsByTagName('p');
+            if (messages.length > 3) {
+                output.removeChild(messages[0]);
+            }
             output.scrollTop = output.scrollHeight; // Auto scroll to bottom
         }
 
@@ -114,17 +105,20 @@
             } else if (input === 'income') {
                 calculateIncome();
             } else {
-                addMessage("Unknown command. Type 'help' to see available commands."); }
+                addMessage("Unknown command. Type 'help' to see available commands.");
+            }
 
             // Clear the input field
             document.getElementById('command-input').value = '';
         }
 
         // Display available upgrades with buttons
-        function showUpgrades() {
-            addMessage("Available upgrades:");
+        function showUpgrades() { addMessage("Available upgrades:");
             addMessage(`<button class="upgrade-button" onclick="buyItem('lemonade')">Buy Lemonade Stand ($100)</button>`);
             addMessage(`<button class="upgrade-button" onclick="buyItem('furniture')">Buy Furniture ($50)</button>`);
+            addMessage(`<button class="upgrade-button" onclick="buyItem('hotdog')">Buy Hotdog Stand ($300)</button>`);
+            addMessage(`<button class="upgrade-button" onclick="buyItem('kiosk')">Buy Kiosk ($500)</button>`);
+            addMessage(`<button class="upgrade-button" onclick="buyItem('restaurant')">Buy Restaurant ($1000)</button>`);
         }
 
         // Buying items
@@ -133,14 +127,30 @@
                 player.money -= 100;
                 player.stand = 'lemonade stand';
                 player.income += 10;
-                addMessage("Congrats! You now own a Lemonade Stand. Income increased!");
-                addMessage(`<button class="upgrade-button" onclick="buyItem('lemonade')">Buy Another Lemonade Stand ($100)</button>`);
+                addMessage("Congrats! You now own a Lemonade Stand. Income increased!"); addMessage(`<button class="upgrade-button" onclick="buyItem('lemonade')">Buy Another Lemonade Stand ($100)</button>`);
             } else if (item === 'furniture' && player.money >= 50) {
                 player.money -= 50;
                 player.income += 5;
                 player.upgrades += 1;
                 addMessage("Furniture purchased! Income increased by $5/hour.");
                 addMessage(`<button class="upgrade-button" onclick="buyItem('furniture')">Buy More Furniture ($50)</button>`);
+            } else if (item === 'hotdog' && player.money >= 300) {
+                player.money -= 300;
+                player.stand = 'hotdog stand';
+                player.income += 25;
+                addMessage("Congrats! You now own a Hotdog Stand. Income increased!");
+                addMessage(`<button class="upgrade-button" onclick="buyItem('hotdog')">Buy Another Hotdog Stand ($300)</button>`);
+            } else if (item === 'kiosk' && player.money >= 500) { player.money -= 500;
+                player.stand = 'kiosk';
+                player.income += 50;
+                addMessage("Congrats! You now own a Kiosk. Income increased!");
+                addMessage(`<button class="upgrade-button" onclick="buyItem('kiosk')">Buy Another Kiosk ($500)</button>`);
+            } else if (item === 'restaurant' && player.money >= 1000) {
+                player.money -= 1000;
+                player.stand = 'restaurant';
+                player.income += 100;
+                addMessage("Congrats! You now own a Restaurant. Income increased!");
+                addMessage(`<button class="upgrade-button" onclick="buyItem('restaurant')">Buy Another Restaurant ($1000)</button>`);
             } else {
                 addMessage("Not enough money or invalid item.");
             }

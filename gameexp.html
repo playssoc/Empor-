@@ -214,8 +214,24 @@
         }
 
         function showGuide() {
-            addMessage("Guide: The best way to progress is to continuously work to earn money and then invest in upgrades that boost your income.", true);
-            addMessage("Make sure to use the 'ask' and 'search' commands whenever they are off cooldown to gain additional money.", true);
+            addMessage("Guide: Welcome to Empor, a text-based game where you build your empire through strategic decisions and upgrades.", true);
+            addMessage("1. **Basics**: Start by working to earn money. You can use the 'work' command to work a shift and earn money.");
+            addMessage("2. **Commands**: Here are the primary commands you can use:");
+            addMessage("   - **work**: Work a shift to earn money (2 minutes cooldown).");
+            addMessage("   - **ask**: Ask for tips to earn additional money (3 minutes cooldown).");
+            addMessage("   - **search**: Search for cash to find extra money (2 minutes cooldown).");
+            addMessage("   - **income**: Claim your hourly income (1 hour cooldown).");
+            addMessage("   - **profile**: Display your current profile including money and income.");
+            addMessage("   - **upgrades**: Show available upgrades to boost your income.");
+            addMessage("   - **cooldowns**: Show all active cooldowns for your commands.");
+            addMessage("   - **guide**: Show this guide.");
+            addMessage("3. **Upgrades**: Invest in upgrades to increase your income. Each upgrade has a price and provides an additional hourly income. The available upgrades are:");
+            addMessage("   - **flowers**: Price: $100, Income: $10/hour");
+            addMessage("   - **paint**: Price: $200, Income: $20/hour");
+            addMessage("   - **bathrooms**: Price: $500, Income: $50/hour");
+            addMessage("   - **chairs**: Price: $1000, Income: $100/hour");
+            addMessage("4. **Strategy**: Focus on continuously working to earn money and then invest in upgrades to boost your income. Make sure to use the 'ask' and 'search' commands whenever they are off cooldown to gain additional money.");
+            addMessage("5. **Hidden Commands**: There are hidden commands like '\\n' that can give you bonuses. Explore and find them!");
         }
 
         function showUpgrades() {

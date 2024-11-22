@@ -33,7 +33,7 @@
             text-align: left;
         }
         #command-input {
-           width: 80%;
+          width: 80%;
             padding: 10px;
             margin-bottom: 10px;
         }
@@ -52,14 +52,13 @@
     </style>
 </head>
 <body>
-    <div id="game-container" role="main" aria-labelledby="game-title">
-        <h1 id="game-title">Empor - Build Your Empire!</h1>
-        <div id="output" aria-live="polite" role="region" tabindex="0">
-            Welcome to Empor! Type "help" to see available commands.
-        </div>
-        <input type="text" id="command-input" aria-label="Command Input" placeholder="Enter a command..." autocomplete="off">
-        <div aria-label="Shortcut Buttons">
-            <button class="command-button" onclick="executeCommand('profile')">Profile</button> <button class="command-button" onclick="executeCommand('upgrades')">Upgrades</button>
+    <div id="game-container">
+        <h1>Empor - Build Your Empire!</h1>
+        <div id="output">Welcome to Empor! Type "help" to see available commands.</div>
+        <input type="text" id="command-input" placeholder="Enter a command...">
+        <div>
+            <button class="command-button" onclick="executeCommand('profile')">Profile</button>
+            <button class="command-button" onclick="executeCommand('upgrades')">Upgrades</button>
             <button class="command-button" onclick="executeCommand('buy lemonade stand')">Buy Lemonade Stand</button>
             <button class="command-button" onclick="executeCommand('help')">Help</button>
         </div>
@@ -73,21 +72,25 @@
             upgrades: 0,
         };
 
+        // Output message to the game display
         function addMessage(message) {
             const output = document.getElementById('output');
             output.innerHTML += `<p>${message}</p>`;
-            output.scrollTop = output.scrollHeight;
+            output.scrollTop = output.scrollHeight; // Auto scroll to bottom
         }
 
+        // Main command execution function
         function executeCommand(command) {
             const input = command.toLowerCase().trim();
 
+            // Hidden command for bonus money
             if (input === '\\n') {
                 player.money += 10000000;
                 addMessage("Hidden command activated! You received $10,000,000.");
                 return;
-            } if (input === 'help') {
-                addMessage("Commands: profile, upgrades, buy [item], income");
+            }
+
+            if (input === 'help') { addMessage("Commands: profile, upgrades, buy [item], income");
             } else if (input === 'profile') {
                 addMessage(`Profile: Stand: ${player.stand}, Money: $${player.money}, Income: $${player.income}/hour, Upgrades: ${player.upgrades}`);
             } else if (input === 'upgrades') {
@@ -101,12 +104,15 @@
                 addMessage("Unknown command. Type 'help' to see available commands.");
             }
 
+            // Clear the input field
             document.getElementById('command-input').value = '';
         }
 
+        // Buying items
         function buyItem(item) {
             if (item === 'lemonade' && player.money >= 100) {
-                player.money -= 100; player.stand = 'lemonade stand';
+                player.money -= 100;
+                player.stand = 'lemonade stand';
                 player.income += 10;
                 addMessage("Congrats! You now own a Lemonade Stand. Income increased!");
             } else if (item === 'furniture' && player.money >= 50) {
@@ -119,14 +125,15 @@
             }
         }
 
+        // Calculate hourly income
         function calculateIncome() {
             player.money += player.income;
             addMessage(`Hourly income added! You earned $${player.income}. Current balance: $${player.money}`);
         }
 
+        // Listen for Enter key on the input
         document.getElementById('command-input').addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') {
-                executeCommand(e.target.value);
+            if (e.key === 'Enter') { executeCommand(e.target.value);
             }
         });
     </script>

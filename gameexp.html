@@ -144,12 +144,13 @@
         function buyItem(item) {
             if (item in player.upgrades) {
                 const upgrade = player.upgrades[item];
-                if (player.money >= upgrade.price) {
+                if (upgrade.level >= 10) {
+                    addMessage("This item is already at the highest level.");
+                } else if (player.money >= upgrade.price) {
                     player.money -= upgrade.price;
                     player.income += upgrade.income;
                     upgrade.level += 1;
                     upgrade.price *= 2; // Increase price for the next upgrade
-                    if (upgrade.level > 10) upgrade.level = 10; // Ensure level does not exceed 10
                     addMessage(`Congrats! You bought ${item}. Income increased! <button class="upgrade-button" onclick="buyItem('${item}')">Buy Again</button>`);
                 } else {
                     addMessage("Not enough money.");

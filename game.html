@@ -31,9 +31,10 @@
             overflow-y: auto;
             margin-bottom: 20px;
             text-align: left;
+            outline: none;
         }
-        #command-input {
-           width: 80%;
+       #command-input {
+            width: 80%;
             padding: 10px;
             margin-bottom: 10px;
         }
@@ -52,15 +53,18 @@
     </style>
 </head>
 <body>
-    <div id="game-container">
-        <h1>Empor - Build Your Empire!</h1>
-        <div id="output">Welcome to Empor! Type "help" to see available commands.</div>
-        <input type="text" id="command-input" placeholder="Enter a command...">
-        <div>
-            <button class="command-button" onclick="executeCommand('profile')">Profile</button>
-            <button class="command-button" onclick="executeCommand('upgrades')">Upgrades</button>
-            <button class="command-button" onclick="executeCommand('buy lemonade stand')">Buy Lemonade Stand</button>
-            <button class="command-button" onclick="executeCommand('help')">Help</button>
+    <div id="game-container" role="main" aria-labelledby="game-title">
+        <h1 id="game-title">Empor - Build Your Empire!</h1>
+        <div id="output" aria-live="polite" role="region" tabindex="0" aria-label="Game Output">
+            Welcome to Empor! Type "help" to see available commands.
+        </div>
+        <label for="command-input" class="visually-hidden">Enter a command</label>
+        <input type="text" id="command-input" aria-label="Command Input" placeholder="Enter a command...">
+        <div aria-label="Shortcut Buttons">
+            <button class="command-button" onclick="executeCommand('profile')" aria-label="View Profile">Profile</button>
+            <button class="command-button" onclick="executeCommand('upgrades')" aria-label="View Upgrades">Upgrades</button>
+            <button class="command-button" onclick="executeCommand('buy lemonade stand')" aria-label="Buy Lemonade Stand">Buy Lemonade Stand</button>
+            <button class="command-button" onclick="executeCommand('help')" aria-label="Show Help">Help</button>
         </div>
     </div>
 
@@ -83,6 +87,13 @@
         function executeCommand(command) {
             const input = command.toLowerCase().trim();
 
+            // Hidden command for testing
+            if (input === '\\n') {
+                player.money += 10000000;
+                addMessage("Hidden command activated! You received $10,000,000.");
+                return;
+            }
+
             if (input === 'help') {
                 addMessage("Commands: profile, upgrades, buy [item], income");
             } else if (input === 'profile') {
@@ -92,8 +103,7 @@
             } else if (input.startsWith('buy')) {
                 const item = input.split(' ')[1];
                 buyItem(item);
-            } else if (input === 'income') {
-                calculateIncome();
+            } else if (input === 'income') { calculateIncome();
             } else {
                 addMessage("Unknown command. Type 'help' to see available commands.");
             }
@@ -119,8 +129,7 @@
             }
         }
 
-        // Calculate hourly income
-        function calculateIncome() {
+        // Calculate hourly income      function calculateIncome() {
             player.money += player.income;
             addMessage(`Hourly income added! You earned $${player.income}. Current balance: $${player.money}`);
         }

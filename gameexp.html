@@ -60,6 +60,9 @@
             <button class="command-button" onclick="executeCommand('profile')">Profile</button>
             <button class="command-button" onclick="executeCommand('upgrades')">Upgrades</button>
             <button class="command-button" onclick="executeCommand('help')">Help</button>
+            <button class="command-button" onclick="executeCommand('work')">Work</button>
+            <button class="command-button" onclick="executeCommand('ask')">Ask</button>
+            <button class="command-button" onclick="executeCommand('search')">Search</button>
         </div>
     </div>
 
@@ -98,7 +101,14 @@
             }
 
             if (input === 'help') {
-                addMessage("Commands: profile, upgrades, buy [item], income");
+                addMessage("Commands: profile, upgrades, buy [item], income, work, ask, search");
+                addMessage("profile - Display your profile.");
+                addMessage("upgrades - Show available upgrades.");
+                addMessage("buy [item] - Buy an upgrade item.");
+                addMessage("income - Calculate your hourly income.");
+                addMessage("work - Work a shift to earn money.");
+                addMessage("ask - Ask for tips.");
+                addMessage("search - Search for cash with a chance to find money.");
             } else if (input === 'profile') {
                 addMessage(`Profile: Money: $${player.money}, Income: $${player.income}/hour`);
             } else if (input === 'upgrades') {
@@ -108,6 +118,12 @@
                 buyItem(item);
             } else if (input === 'income') {
                 calculateIncome();
+            } else if (input === 'work') {
+                workShift();
+            } else if (input === 'ask') {
+                askForTips();
+            } else if (input === 'search') {
+                searchForCash();
             } else {
                 addMessage("Unknown command. Type 'help' to see available commands.");
             }
@@ -120,7 +136,7 @@
         function showUpgrades() {
             addMessage("Available upgrades:");
             for (const [key, value] of Object.entries(player.upgrades)) {
-                addMessage(`<button class="upgrade-button" onclick="buyItem('${key}')">${key.charAt(0).toUpperCase() + key.slice(1)} $${value.price} | $${value.income}/hour ${value.level}/10</button>`);
+                addMessage(`<button class="upgrade-button" onclick="buyItem('${key}')">${key.charAt(0).toUpperCase() + key.slice(1)} $${value.price} | $${value.income}/hour ${value.level}/10</button><button class="upgrade-button" onclick="buyItem('${key}')">Buy Again</button>`);
             }
         }
 
@@ -146,6 +162,32 @@
         function calculateIncome() {
             player.money += player.income;
             addMessage(`Hourly income added! You earned $${player.income}. Current balance: $${player.money}`);
+        }
+
+        // Work a shift
+        function workShift() {
+            const earnings = player.income;
+            player.money += earnings;
+            addMessage(`You worked a shift and earned $${earnings}. Current balance: $${player.money}`);
+        }
+
+        // Ask for tips
+        function askForTips() {
+            const tips = Math.floor(Math.random() * player.income);
+            player.money += tips;
+            addMessage(`You asked for tips and received $${tips}. Current balance: $${player.money}`);
+        }
+
+        // Search for cash
+        function searchForCash() {
+            const chance = Math.random();
+            if (chance <= 0.7) {
+                const foundMoney = Math.floor(0.3 * player.income);
+                player.money += foundMoney;
+                addMessage(`You searched and found $${foundMoney}. Current balance: $${player.money}`);
+            } else {
+                addMessage("You searched but found nothing.");
+            }
         }
 
         // Listen for Enter key on the input

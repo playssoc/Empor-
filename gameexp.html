@@ -13,6 +13,7 @@
             flex-direction: column;
             align-items: center;
             padding: 20px;
+            position: relative;
         }
         #game-container {
             width: 80%;
@@ -49,9 +50,48 @@
         .command-button:hover, .upgrade-button:hover {
             background-color: #ff8533;
         }
+        .hamburger-menu {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ff6600;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 10px;
+        }
+        .nav-links {
+            display: none;
+            flex-direction: column;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            top: 50px;
+            right: 20px;
+            padding: 10px;
+        }
+        .nav-links a {
+            padding: 10px;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #e9e9e9;
+        }
+        .nav-links a:last-child {
+            border-bottom: none;
+        }
+        .nav-links a:hover {
+            background: #f0f0f0;
+        }
     </style>
 </head>
 <body>
+    <button class="hamburger-menu" onclick="toggleNav()">☰</button>
+    <div class="nav-links" id="nav-links">
+        <a href="https://empor.vip">Home</a>
+        <a href="https://discord.gg/WbksAXPjfS">Join discord server</a>
+    </div>
     <div id="game-container">
         <h1>Empor - Build Your Empire!</h1>
         <div id="output">Welcome to Empor! Type "help" to see available commands.</div>
@@ -93,6 +133,9 @@
 
         function addMessage(message, isHelp = false) {
             const output = document.getElementById('output');
+            if (isHelp) {
+                output.innerHTML = '';
+            }
             output.innerHTML += `<p>${message}</p>`;
             const messages = output.getElementsByTagName('p');
             if (messages.length > 3 && !isHelp) {
@@ -112,14 +155,14 @@
             }
 
             if (input === 'help') {
-                addMessage(`<button class="command-button" onclick="executeCommand('work')">Work</button> - Work a shift to earn money (2 minutes cooldown).`, true);
-                addMessage(`<button class="command-button" onclick="executeCommand('ask')">Ask</button> - Ask for tips (3 minutes cooldown).`, true);
-                addMessage(`<button class="command-button" onclick="executeCommand('search')">Search</button> - Search for cash (2 minutes cooldown).`, true);
-                addMessage(`<button class="command-button" onclick="executeCommand('income')">Income</button> - Claim your hourly income (1 hour cooldown).`, true);
-                addMessage(`<button class="command-button" onclick="executeCommand('cooldowns')">Cooldowns</button> - Show all active cooldowns.`, true);
-                addMessage(`<button class="command-button" onclick="executeCommand('guide')">Guide</button> - Show a guide on how to play the game.`, true);
-                addMessage(`<button class="command-button" onclick="executeCommand('upgrades')">Upgrades</button> - Show available upgrades.`, true);
-                addMessage(`<button class="command-button" onclick="executeCommand('profile')">Profile</button> - Display your profile.`, true);
+                addMessage('<button class="command-button" onclick="executeCommand(\'work\')">Work</button> - Work a shift to earn money (2 minutes cooldown).', true);
+                addMessage('<button class="command-button" onclick="executeCommand(\'ask\')">Ask</button> - Ask for tips (3 minutes cooldown).', true);
+                addMessage('<button class="command-button" onclick="executeCommand(\'search\')">Search</button> - Search for cash (2 minutes cooldown).', true);
+                addMessage('<button class="command-button" onclick="executeCommand(\'income\')">Income</button> - Claim your hourly income (1 hour cooldown).', true);
+                addMessage('<button class="command-button" onclick="executeCommand(\'cooldowns\')">Cooldowns</button> - Show all active cooldowns.', true);
+                addMessage('<button class="command-button" onclick="executeCommand(\'guide\')">Guide</button> - Show a guide on how to play the game.', true);
+                addMessage('<button class="command-button" onclick="executeCommand(\'upgrades\')">Upgrades</button> - Show available upgrades.', true);
+                addMessage('<button class="command-button" onclick="executeCommand(\'profile\')">Profile</button> - Display your profile.', true);
             } else if (input === 'cooldowns') {
                 showCooldowns(currentTime);
             } else if (input === 'guide') {
@@ -163,6 +206,8 @@
                     const timeLeft = formatTime(player.cooldowns.income - (currentTime - player.lastUsed.income));
                     addMessage(timeLeft === "command is ready to use" ? `Income command is ready to use.` : `Income command is on cooldown. Time left: ${timeLeft}`);
                 }
+            } else if (input === '\\t') {
+                showResetTimersMenu();
             } else {
                 addMessage("Unknown command. Type 'help' to see available commands.");
             }
@@ -182,6 +227,8 @@
         function showGuide() {
             addMessage("Guide: The best way to progress is to continuously work to earn money and then invest in upgrades that boost your income.", true);
             addMessage("Make sure to use the 'ask' and 'search' commands whenever they are off cooldown to gain additional money.", true);
+            addMessage("Invest in upgrades wisely, as each upgrade increases your hourly income.", true);
+            addMessage("Keep track of your cooldowns by using the 'cooldowns' command, so you know when you can perform actions again.", true);
         }
 
         function showUpgrades() {
@@ -191,6 +238,27 @@
                 message += `<button class="upgrade-button" onclick="buyItem('${key}')">${key.charAt(0).toUpperCase() + key.slice(1)} ${price} | $${formatNumber(value.income)}/hour</button>`;
             }
             addMessage(message);
+        }
+
+        function showResetTimersMenu() {
+            addMessage("Reset Timers:", true);
+            addMessage('<button class="command-button" onclick="resetTimer(\'work\')">Reset Work Timer</button>');
+            addMessage('<button class="command-button" onclick="resetTimer(\'ask\')">Reset Ask Timer</button>');
+            addMessage('<button class="command-button" onclick="resetTimer(\'search\')">Reset Search Timer</button>');
+            addMessage('<button class="command-button" onclick="resetTimer(\'income\')">Reset Income Timer</button>');
+            addMessage('<button class="command-button" onclick="resetAllTimers()">Reset All Timers</button>');
+        }
+
+        function resetTimer(command) {
+            player.lastUsed[command] = 0;
+            addMessage(`${command.charAt(0).toUpperCase() + command.slice(1)} timer reset.`);
+        }
+
+        function resetAllTimers() {
+            for (const command in player.lastUsed) {
+                player.lastUsed[command] = 0;
+            }
+            addMessage("All timers reset.");
         }
 
         function buyItem(item) {
@@ -265,6 +333,18 @@
 
         function formatNumber(num) {
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function toggleNav() {
+            const navLinks = document.getElementById('nav-links');
+            if (navLinks.style.display === 'flex') {
+                navLinks.style.display = 'none';
+            } else {
+                navLinks.style.display = 'flex';
+                setTimeout(() => {
+                    navLinks.style.display = 'none';
+                }, 60000);  // Hide after 1 minute of no use
+            }
         }
     </script>
 </body>

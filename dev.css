@@ -1,0 +1,52 @@
+body {
+  font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
+  margin: 2em;
+  color: white;
+  background-color: black;
+  text-align: center;
+}
+
+h1 {
+  font-style: italic;
+}
+
+.m {
+  text-align: center;
+}
+
+.lm {
+  display: block;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.row {
+  text-align: center;
+}
+
+.column {
+  float: left;
+  width: 33.33%;
+  padding: 10px;
+  height: 300px;
+  background-color: black;
+}
+
+.column h2 {
+  color: red;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: red;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: darkred;
+}

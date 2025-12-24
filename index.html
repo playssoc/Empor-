@@ -1,173 +1,150 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Empor - Lemonade Stand to Mall Empire Game</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
-            color: #333;
-        }
-        header {
-            background-color: #ffcc00;
-            padding: 20px;
-            text-align: center;
-        }
-        header h1 {
-            margin: 0;
-            color: #333;
-        }
-        .banner {
-            background-image: url('banner.jpg'); /* Replace with an actual banner image */
-            background-size: cover;
-            background-position: center;
-            padding: 60px;
-            text-align: center;
-            color: white;
-        }
-        .content {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .login-buttons {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .login-buttons button {
-            margin: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            border-radius: 4px;
-        }
-        .google-login {
-            background-color: #4285F4;
-            color: white;
-        }
-        .discord-login {
-            background-color: #5865F2;
-            color: white;
-        }
-        .guest-login {
-            background-color: #FF5733;
-            color: white;
-        }
-        footer {
-            text-align: center;
-            padding: 10px;
-            background-color: #333;
-            color: white;
-            margin-top: 20px;
-        }
-        .navbar {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-        }
-        .nav-toggle {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #333;
-        }
-        .nav-menu {
-            display: none;
-            flex-direction: column;
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-top: 10px;
-            padding: 10px;
-        }
-        .nav-link {
-            padding: 10px;
-            text-decoration: none;
-            color: #333;
-        }
-        .nav-link:hover {
-            background-color: #f0f0f0;
-            border-radius: 4px;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clans of Access</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="navbar">
-        <button class="nav-toggle" aria-label="toggle navigation">☰</button>
-        <div class="nav-menu">
-            <a href="https://empor.vip" class="nav-link">Home</a>
-            <a href="https://empor.vip/dox" class="nav-link">Dox</a>
-            <a href="https://discord.gg/B28H4qfvXG" class="nav-link">Discord</a>
+  <main id="app">
+    <section id="screen_main" class="screen">
+      <div class="top_row">
+        <button id="btn_group" type="button">Group</button>
+        <div class="title">Main</div>
+        <button id="btn_account" type="button">Account</button>
+      </div>
+
+      <div class="center_area">
+        <div class="hud" id="hud_text"></div>
+
+        <div class="grid_wrap">
+          <table id="grid" class="grid" cellspacing="0" cellpadding="0">
+            <tbody id="grid_body"></tbody>
+          </table>
         </div>
-    </div>
 
-    <header>
-        <h1>Welcome to Empor</h1>
-        <p>The Ultimate Upgrade Adventure</p>
-    </header>
-
-    <div class="banner">
-        <h2>Turn Your Lemonade Stand into a Retail Empire!</h2>
-        <p>Start small, expand, and reach the top!</p>
-    </div>
-
-    <div class="content">
-        <h3>About the Game</h3>
-        <p>In <strong>Empor</strong>, you start with a lemonade stand and work your way up by making smart upgrades and investments. Your goal is to build a retail empire by unlocking new stands, buying new [...]
-
-        <h3>How to Play</h3>
-        <ol>
-            <li><strong>Start Small:</strong> Run your lemonade stand and earn hourly income.</li>
-            <li><strong>Upgrade & Expand:</strong> Invest in new furniture and decorations to boost income.</li>
-            <li><strong>Unlock New Stands:</strong> Upgrade to hotdog stands, burger joints, and beyond!</li>
-            <li><strong>Reach the Mall:</strong> Your ultimate goal is to manage a full-scale shopping mall.</li>
-        </ol>
-
-        <h3>Progression</h3>
-        <p>With each upgrade, you'll unlock new items to purchase and increase your income rate. Maximize each location's income potential to keep moving toward the ultimate goal: owning the Empor Mall.</p>
-
-        <div class="login-buttons">
-            <button class="google-login">Login with Google</button>
-            <button class="discord-login">Login with Discord</button>
-            <button class="guest-login">Login as Guest</button>
+        <div class="panel" id="tile_panel">
+          <div class="panel_title">Tile</div>
+          <div id="tile_text">Select a tile.</div>
+          <div class="panel_actions">
+            <button id="btn_claim" type="button">Claim</button>
+<button id="btn_build" type="button">Build</button>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <footer>
-        <p>&copy; 2024 Empor Game. All rights reserved.</p>
-        <p><a href="https://empor.vip/privacy">Privacy Policy</a> | <a href="https://empor.vip/tos">Terms Of Service</a></p>
-    </footer>
+      <div class="bottom_row">
+        <button id="btn_war" type="button">War</button>
+        <div class="spacer"></div>
+        <button id="btn_shop" type="button">Shop</button>
+      </div>
+    </section>
 
-    <!-- Add authentication scripts here -->
-    <script>
-        document.querySelector('.google-login').addEventListener('click', () => {
-            // Redirect to Google OAuth (this requires backend setup)
-            alert("Google login is under construction.");
-        });
+    <section id="screen_shop" class="screen hidden">
+      <div class="top_row">
+        <button id="btn_back_from_shop" type="button">Back</button>
+        <div class="title">Shop</div>
+        <div class="ghost"></div>
+      </div>
 
-        document.querySelector('.discord-login').addEventListener('click', () => {
-            // Redirect to Discord OAuth (this requires backend setup)
-            alert("Discord login is under construction.");
-        });
+      <div class="content">
+        <div class="hud" id="shop_hud"></div>
+        <div class="panel">
+          <div class="panel_title">Items</div>
+          <div id="shop_list"></div>
+        </div>
+        <div class="panel">
+          <div class="panel_title">Shop log</div>
+          <div id="shop_log"></div>
+        </div>
+      </div>
+    </section>
 
-        document.querySelector('.guest-login').addEventListener('click', () => {
-            alert("Warning: After closing the tab, all game progress will be lost.");
-            window.location.href = "https://empor.vip/game";
-        });
+    <section id="screen_war" class="screen hidden">
+      <div class="top_row"> <button id="btn_back_from_war" type="button">Back</button>
+        <div class="title">War</div>
+        <div class="ghost"></div>
+      </div>
 
-        document.querySelector('.nav-toggle').addEventListener('click', () => {
-            const navMenu = document.querySelector('.nav-menu');
-            navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
-        });
-    </script>
+      <div class="content">
+        <div class="hud" id="war_hud"></div>
+
+        <div class="panel">
+          <div class="panel_title">Target</div>
+          <div id="war_target_text">Select a tile on the main map first.</div>
+        </div>
+
+        <div class="panel">
+          <div class="panel_title">Action</div>
+          <div class="panel_actions">
+            <button id="btn_raid" type="button">Raid</button>
+            <button id="btn_disrupt" type="button">Disrupt</button>
+            <button id="btn_liberate" type="button">Liberate</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel_title">Battle report</div>
+          <div id="war_report"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen_group" class="screen hidden">
+      <div class="top_row">
+        <button id="btn_back_from_group" type="button">Back</button>
+        <div class="title">Group</div>
+        <div class="ghost"></div>
+      </div>
+
+      <div class="content">
+        <div class="panel">
+          <div class="panel_title">Clan</div>
+          <div id="group_text"></div>
+          <div class="panel_actions">
+            <button id="btn_recruit" type="button">Recruit</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel_title">Group log</div>
+          <div id="group_log"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen_account" class="screen hidden">
+      <div class="top_row">
+        <button id="btn_back_from_account" type="button">Back</button>
+        <div class="title">Account</div>
+        <div class="ghost"></div>
+      </div>
+
+      <div class="content">
+        <div class="panel">
+          <div class="panel_title">Profile</div>
+
+          <label class="label" for="clan_name">Clan name</label>    <input id="clan_name" type="text" inputmode="text">
+
+          <div class="panel_actions">
+            <button id="btn_save_name" type="button">Save name</button>
+            <button id="btn_new_game" type="button">New game</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel_title">Save</div>
+          <div id="save_text"></div>
+          <div class="panel_actions">
+            <button id="btn_save_now" type="button">Save now</button>
+            <button id="btn_load_now" type="button">Load now</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
 </body>
 </html>
